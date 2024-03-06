@@ -1,0 +1,5 @@
+# vi: ft=yaml.ansible
+---
+- ansible.builtin.include_role:
+    name: gantsign.golang
+

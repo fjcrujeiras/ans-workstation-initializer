@@ -1,0 +1,79 @@
+# vi: ft=yaml.ansible
+---
+- name: Install my basic packages
+  hosts: all
+  gather_facts: true
+  vars:
+    user: '{{ ansible_user_id }}'
+  tasks:
+
+    - name: Add extra PPA repositories
+      ansible.builtin.apt_repository:
+        repo: '{{ item }}'
+      become: yes
+      loop: "{{ hostvars[inventory_hostname]['ppa_repositories'] }}"
+
+      # As it is not possible to loop a block, we iterate over a file of tasks
+    - name: Add extra APT repositories
+      include_tasks: apt_repos.yaml
+      loop: "{{ hostvars[inventory_hostname]['apt_repositories'] }}"
+
+    - name: Install Apt packages
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: latest
+        update_cache: yes
+        cache_valid_time: 3600
+      become: yes
+      loop: "{{ hostvars[inventory_hostname]['apt_packages'] }}"
+
+    - name: Download and install nerdfonts
+      block:
+        - ansible.builtin.file:
+            path: "/usr/share/fonts/{{ item }}"
+            state: directory
+          become: yes
+          loop: "{{ hostvars[inventory_hostname]['nerd_fonts_list'] }}"
+        - name: Download and install Nerdfonts
+          ansible.builtin.unarchive:
+            src: "https://github.com/ryanoasis/nerd-fonts/releases/download/v{{ hostvars[inventory_hostname]['nerd_fonts_version'] }}/{{ item }}.zip"
+            dest: "/usr/share/fonts/{{ item }}"
+            remote_src: yes
+          loop: "{{ hostvars[inventory_hostname]['nerd_fonts_list'] }}"
+          become: yes
+
+- name: Install Runtimes
+  hosts: all
+  gather_facts: true
+  vars:
+    golang_version: "{{ hostvars[inventory_hostname]['golang_version'] }}"
+    golang_install_dir: "{{ hostvars[inventory_hostname]['golang_install_dir'] }}"
+    golang_gopath: "{{ hostvars[inventory_hostname]['golang_gopath'] }}"
+    user: '{{ ansible_user_id }}'
+  tasks:
+    - ansible.builtin.include_tasks: "{{ item }}"
+      with_fileglob:
+        - runtimes/*.yaml
+
+- name: Install packages from runtimes
+  hosts: all
+  gather_facts: true
+  vars:
+    user: '{{ ansible_user_id }}'
+  tasks:
+    - name: Install Cargo Packages
+      community.general.cargo:
+        name: "{{ item }}"
+        path: "/home/{{ user }}/.cargo"
+      loop: "{{ hostvars[inventory_hostname]['cargo_packages'] }}"
+
+    - name: Install Go Packages
+      ansible.builtin.shell: "{{ golang_install_dir }}/bin/go install {{ item }}"
+      loop: "{{ hostvars[inventory_hostname]['go_packages'] }}"
+      environment:
+        GOPATH: "{{ hostvars[inventory_hostname]['golang_gopath'] }}"
+
+- name: Apply user customizations
+  ansible.builtin.import_playbook: user-configs.yaml
+
+

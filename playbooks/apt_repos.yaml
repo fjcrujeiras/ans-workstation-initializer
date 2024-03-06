@@ -1,0 +1,13 @@
+# vi: ft=yaml.ansible
+---
+- name: Add apt-key
+  become: yes
+  ansible.builtin.get_url:
+    url: "{{ item.key_url }}"
+    dest: "{{ item.key_location }}"
+
+- name: Add apt-repo
+  become: yes
+  ansible.builtin.apt_repository:
+    repo: "{{ item.repo }}"
+    state: present

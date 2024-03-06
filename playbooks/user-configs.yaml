@@ -1,0 +1,25 @@
+# vi: ft=yaml.ansible
+---
+- name: User configurations
+  vars:
+    user: '{{ ansible_user_id }}'
+  hosts: all
+  gather_facts: true
+  tasks:
+
+    - name: Change default shell to ZSH
+      ansible.builtin.user:
+        name: '{{ user }}'
+        shell: '/usr/bin/zsh'
+      become: yes
+
+    - name: Download Tmux Plugin Manager (TPM)
+      ansible.builtin.git:
+        repo: 'https://github.com/tmux-plugins/tpm'
+        dest: '/home/{{ user }}/.tmux/plugins/tpm'
+
+    - name: Install asdf vm
+      ansible.builtin.git:
+        repo: 'https://github.com/asdf-vm/asdf.git'
+        dest: '/home/{{ user }}/.asdf'
+        version: 'v0.14.0'

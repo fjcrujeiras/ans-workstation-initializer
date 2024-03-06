@@ -1,0 +1,45 @@
+# vi: ft=yaml.ansible
+---
+#https://docs.ansible.com/ansible/latest/inventory/implicit_localhost.html
+all:
+  hosts:
+    localhost:
+      ansible_connection: 'local'
+      ppa_repositories:
+        - 'ppa:neovim-ppa/unstable'
+        - 'ppa:aslatter/ppa'
+      apt_repositories:
+        - {
+          repo: "deb [signed-by=/etc/apt/keyrings/syncthing-archive-keyring.gpg] https://apt.syncthing.net/ syncthing stable",
+          key_url: "https://syncthing.net/release-key.gpg",
+          key_location: "/etc/apt/keyrings/syncthing-archive-keyring.gpg",
+        }
+      golang_version: '1.22.0'
+      golang_install_dir: '/opt/go/'
+      golang_gopath: '/home/{{ ansible_user_id }}/.go'
+      go_packages:
+        - "github.com/terraform-docs/terraform-docs@v0.17.0"
+        - "github.com/jrhouston/tfk8s@latest"
+        - "github.com/direnv/direnv/v2@v2.34.0"
+      apt_packages:
+        - "7zip"
+        - "fzf"
+        - "wget"
+        - "stow"
+        - "tmux"
+        - "zsh"
+        - "neovim"
+        - "gcc"
+        - "alacritty"
+        - "tree"
+        - "make"
+        - "syncthing"
+      cargo_packages:
+        - "eza"
+      nerd_fonts_version: "2.1.0"
+      nerd_fonts_list:
+        - "JetBrainsMono"
+        - "SpaceMono"
+        - "Terminus"
+        - "Ubuntu"
+        - "UbuntuMono"
