@@ -1,3 +1,4 @@
+# vi: ft=yaml.ansible
 ---
 - name: Check if cargo is installed
   shell: command -v cargo

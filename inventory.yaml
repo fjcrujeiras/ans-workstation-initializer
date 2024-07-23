@@ -11,6 +11,11 @@ all:
       apt_repositories:
         # Ensure all keys go to /etc/apt/trusted.gpg.d in .asc extension
         - {
+          repo: "deb [signed-by=/etc/apt/trusted.gpg.d/mongodb.asc] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse {{ ansible_distribution_release }}/mongodb-org/6.0 multiverse",
+          key_url: "https://www.mongodb.org/static/pgp/server-6.0.asc",
+          key_location: "/etc/apt/trusted.gpg.d/mongodb.asc"
+        }
+        - {
           repo: "deb [signed-by=/etc/apt/trusted.gpg.d/terraform.asc] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main",
           key_url: "https://apt.releases.hashicorp.com/gpg",
           key_location: "/etc/apt/trusted.gpg.d/terraform.asc"
@@ -48,6 +53,7 @@ all:
         - "make"
         - "chromium-browser"
         - "chrome-gnome-shell"
+        - "mongocli"
       pip_install_packages:
         - name: tftui # TUI for managing Terraform state
       cargo_packages:
