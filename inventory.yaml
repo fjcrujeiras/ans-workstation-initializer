@@ -1,6 +1,6 @@
 # vi: ft=yaml.ansible
 ---
-#https://docs.ansible.com/ansible/latest/inventory/implicit_localhost.html
+# https://docs.ansible.com/ansible/latest/inventory/implicit_localhost.html
 all:
   hosts:
     localhost:
@@ -9,19 +9,32 @@ all:
         - 'ppa:neovim-ppa/unstable'
         - 'ppa:aslatter/ppa'
       apt_repositories:
+        # Ensure all keys go to /etc/apt/trusted.gpg.d in .asc extension
         - {
-          repo: "deb [signed-by=/etc/apt/keyrings/syncthing-archive-keyring.gpg] https://apt.syncthing.net/ syncthing stable",
-          key_url: "https://syncthing.net/release-key.gpg",
-          key_location: "/etc/apt/keyrings/syncthing-archive-keyring.gpg",
+          repo: "deb [signed-by=/etc/apt/trusted.gpg.d/terraform.asc] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main",
+          key_url: "https://apt.releases.hashicorp.com/gpg",
+          key_location: "/etc/apt/trusted.gpg.d/terraform.asc"
         }
       golang_version: '1.22.0'
       golang_install_dir: '/opt/go/'
       golang_gopath: '/home/{{ ansible_user_id }}/.go'
       go_packages:
-        - "github.com/terraform-docs/terraform-docs@v0.17.0"
-        - "github.com/jrhouston/tfk8s@latest"
-        - "github.com/direnv/direnv/v2@v2.34.0"
+        - "github.com/terraform-docs/terraform-docs@v0.17.0" # Automated docs for Terraform Modules
+        - "github.com/jrhouston/tfk8s@latest" # Easily convert Kubernetes manifests to Terraform Resources
+        - "github.com/direnv/direnv/v2@v2.34.0" # Automatically load environment variables on directory change
+        - "github.com/rhysd/actionlint/cmd/actionlint@latest" # Linter for GH actions
+        - "github.com/nektos/act@latest" # local GH action testing
+        - "github.com/jesseduffield/lazygit@latest" # TUI for GIT
+        # - "github.com/mk-5/fjira@latest" # Manage Jira from terminal
+        - "github.com/charmbracelet/glow@v1.5.1" # In-terminal markdown renderer
       apt_packages:
+        - "git"
+        - "wget"
+        - "docker.io"
+        - "pavucontrol"
+        - "libfuse2"
+        - "curl"
+        - "docker-compose"
         - "7zip"
         - "fzf"
         - "wget"
@@ -33,9 +46,14 @@ all:
         - "alacritty"
         - "tree"
         - "make"
-        - "syncthing"
+        - "chromium-browser"
+        - "chrome-gnome-shell"
+      pip_install_packages:
+        - name: tftui # TUI for managing Terraform state
       cargo_packages:
-        - "eza"
+        - "eza" # Alternative to ls
+        - "bat" # Cat clone with extra features
+        - "yazi-cli" # Terminal file explorer
       nerd_fonts_version: "2.1.0"
       nerd_fonts_list:
         - "JetBrainsMono"

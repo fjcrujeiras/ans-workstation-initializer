@@ -6,17 +6,17 @@
   hosts: all
   gather_facts: true
   tasks:
-
     - name: Change default shell to ZSH
       ansible.builtin.user:
         name: '{{ user }}'
         shell: '/usr/bin/zsh'
-      become: yes
+      become: true
 
     - name: Download Tmux Plugin Manager (TPM)
       ansible.builtin.git:
-        repo: 'https://github.com/tmux-plugins/tpm'
+        repo: 'https://github.com/tmux-plugins/tpm.git'
         dest: '/home/{{ user }}/.tmux/plugins/tpm'
+        version: 'master'
 
     - name: Install asdf vm
       ansible.builtin.git:
