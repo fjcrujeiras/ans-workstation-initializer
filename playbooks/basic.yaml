@@ -3,8 +3,10 @@
 - name: Install my basic packages
   hosts: all
   gather_facts: true
+  become: true
   roles:
     - geerlingguy.pip
+    - geerlingguy.docker
   vars:
     user: '{{ ansible_user_id }}'
   tasks:
@@ -36,7 +38,7 @@
           ansible.builtin.file:
             path: "/usr/share/fonts/{{ item }}"
             state: directory
-            mode: "644"
+            mode: "755"
           become: true
           loop: "{{ hostvars[inventory_hostname]['nerd_fonts_list'] }}"
 
@@ -47,6 +49,8 @@
             remote_src: true
           loop: "{{ hostvars[inventory_hostname]['nerd_fonts_list'] }}"
           become: true
+      tags: 
+        - fonts
 
 - name: Install Runtimes
   hosts: all

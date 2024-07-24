@@ -11,7 +11,7 @@ all:
       apt_repositories:
         # Ensure all keys go to /etc/apt/trusted.gpg.d in .asc extension
         - {
-          repo: "deb [signed-by=/etc/apt/trusted.gpg.d/mongodb.asc] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse {{ ansible_distribution_release }}/mongodb-org/6.0 multiverse",
+          repo: "deb [signed-by=/etc/apt/trusted.gpg.d/mongodb.asc] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/6.0 main",
           key_url: "https://www.mongodb.org/static/pgp/server-6.0.asc",
           key_location: "/etc/apt/trusted.gpg.d/mongodb.asc"
         }
@@ -20,6 +20,7 @@ all:
           key_url: "https://apt.releases.hashicorp.com/gpg",
           key_location: "/etc/apt/trusted.gpg.d/terraform.asc"
         }
+      docker_install_compose_plugin: true
       golang_version: '1.22.0'
       golang_install_dir: '/opt/go/'
       golang_gopath: '/home/{{ ansible_user_id }}/.go'
@@ -35,7 +36,7 @@ all:
       apt_packages:
         - "git"
         - "wget"
-        - "docker.io"
+        # - "docker.io"
         - "pavucontrol"
         - "libfuse2"
         - "curl"
