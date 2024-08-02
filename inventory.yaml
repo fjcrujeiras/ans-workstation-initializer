@@ -10,15 +10,20 @@ all:
         - 'ppa:aslatter/ppa'
       apt_repositories:
         # Ensure all keys go to /etc/apt/trusted.gpg.d in .asc extension
-        - {
-          repo: "deb [signed-by=/etc/apt/trusted.gpg.d/mongodb.asc] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/6.0 main",
-          key_url: "https://www.mongodb.org/static/pgp/server-6.0.asc",
-          key_location: "/etc/apt/trusted.gpg.d/mongodb.asc"
-        }
+        # - {
+        #   repo: "deb [signed-by=/etc/apt/trusted.gpg.d/mongodb.asc] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/6.0 main",
+        #   key_url: "https://www.mongodb.org/static/pgp/server-6.0.asc",
+        #   key_location: "/etc/apt/trusted.gpg.d/mongodb.asc"
+        # }
         - {
           repo: "deb [signed-by=/etc/apt/trusted.gpg.d/terraform.asc] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main",
           key_url: "https://apt.releases.hashicorp.com/gpg",
           key_location: "/etc/apt/trusted.gpg.d/terraform.asc"
+        }
+        - { # Github CLI
+          repo: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/githubcli.gpg] https://cli.github.com/packages stable main",
+          key_url: "https://cli.github.com/packages/githubcli-archive-keyring.gpg",
+          key_location: "/etc/apt/trusted.gpg.d/githubcli.gpg"
         }
       docker_install_compose_plugin: true
       golang_version: '1.22.0'
@@ -36,7 +41,7 @@ all:
       apt_packages:
         - "git"
         - "wget"
-        # - "docker.io"
+        - "gh"
         - "pavucontrol"
         - "libfuse2"
         - "curl"
@@ -54,7 +59,7 @@ all:
         - "make"
         - "chromium-browser"
         - "chrome-gnome-shell"
-        - "mongocli"
+        # - "mongocli"
       pip_install_packages:
         - name: tftui # TUI for managing Terraform state
       cargo_packages:
