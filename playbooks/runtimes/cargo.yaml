@@ -3,7 +3,7 @@
 - name: Check if cargo is installed
   shell: command -v cargo
   register: cargo_exists
-  ignore_errors: yes
+  ignore_errors: true
   tags:
     - rust
 
@@ -14,13 +14,13 @@
     dest: /tmp/sh.rustup.rs
     mode: '0755'
     force: 'yes'
-  become: yes
+  become: true
   tags:
     - rust
 
 - name: Install rust/cargo
   when: cargo_exists is failed
   shell: /tmp/sh.rustup.rs -y
-  become: yes
+  become: true
   tags:
     - rust

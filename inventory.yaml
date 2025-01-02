@@ -9,16 +9,15 @@ all:
         - 'ppa:neovim-ppa/unstable'
         - 'ppa:aslatter/ppa'
       apt_repositories:
-        # Ensure all keys go to /etc/apt/trusted.gpg.d in .asc extension
-        # - {
-        #   repo: "deb [signed-by=/etc/apt/trusted.gpg.d/mongodb.asc] https://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/6.0 main",
-        #   key_url: "https://www.mongodb.org/static/pgp/server-6.0.asc",
-        #   key_location: "/etc/apt/trusted.gpg.d/mongodb.asc"
-        # }
         - {
           repo: "deb [signed-by=/etc/apt/trusted.gpg.d/terraform.asc] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main",
           key_url: "https://apt.releases.hashicorp.com/gpg",
           key_location: "/etc/apt/trusted.gpg.d/terraform.asc"
+        }
+        - { # Mopidy
+          repo: "deb [signed-by=/etc/apt/trusted.gpg.d/mopidy.asc] https://apt.mopidy.com/ {{ ansible_distribution_release }} bullseye main",
+          key_url: "https://apt.mopidy.com/mopidy.gpg",
+          key_location: "/etc/apt/trusted.gpg.d/mopidy.asc"
         }
         - { # Github CLI
           repo: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/githubcli.gpg] https://cli.github.com/packages stable main",
@@ -36,8 +35,11 @@ all:
         - "github.com/rhysd/actionlint/cmd/actionlint@latest" # Linter for GH actions
         - "github.com/nektos/act@latest" # local GH action testing
         - "github.com/jesseduffield/lazygit@latest" # TUI for GIT
+        - "github.com/gcla/termshark/v2/cmd/termshark@v2.4.0" # TUI alternative to Wireshark
         # - "github.com/mk-5/fjira@latest" # Manage Jira from terminal
         - "github.com/charmbracelet/glow@v1.5.1" # In-terminal markdown renderer
+        - "github.com/grafana/tanka/cmd/tk@latest" # Grafana Tanka
+        - "github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb@latest"
       apt_packages:
         - "git"
         - "wget"
@@ -47,7 +49,8 @@ all:
         - "curl"
         - "docker-compose"
         - "7zip"
-        - "fzf"
+        # - "fzf"
+        # - "fd-find" # fzf find substitution
         - "wget"
         - "stow"
         - "tmux"
@@ -59,6 +62,8 @@ all:
         - "make"
         - "chromium-browser"
         - "chrome-gnome-shell"
+        - "mopidy"
+        - "mopidy-mpd"
         # - "mongocli"
       pip_install_packages:
         - name: tftui # TUI for managing Terraform state
@@ -66,6 +71,9 @@ all:
         - "eza" # Alternative to ls
         - "bat" # Cat clone with extra features
         - "yazi-cli" # Terminal file explorer
+        # - "atac" # Podman-like TUI
+        - "sshs" # TUI app for accessing remote servers from your SSH config
+        - "zoxide" # Alternative to cd
       nerd_fonts_version: "2.1.0"
       nerd_fonts_list:
         - "JetBrainsMono"

@@ -15,11 +15,15 @@
         repo: '{{ item }}'
       become: true
       loop: "{{ hostvars[inventory_hostname]['ppa_repositories'] }}"
+      tags:
+        - apt_repos
 
       # As it is not possible to loop a block, we iterate over a file of tasks
     - name: Add extra APT repositories
       ansible.builtin.include_tasks: apt_repos.yaml
       loop: "{{ hostvars[inventory_hostname]['apt_repositories'] }}"
+      tags:
+        - apt_repos
 
     - name: Install APT packages
       ansible.builtin.apt:
@@ -31,8 +35,11 @@
       loop: "{{ hostvars[inventory_hostname]['apt_packages'] }}"
       tags:
         - apt
+        - apt_repos
 
     - name: Download and install nerdfonts
+      tags:
+        - fonts
       block:
         - name: Ensure directory exists
           ansible.builtin.file:
@@ -49,8 +56,6 @@
             remote_src: true
           loop: "{{ hostvars[inventory_hostname]['nerd_fonts_list'] }}"
           become: true
-      tags: 
-        - fonts
 
 - name: Install Runtimes
   hosts: all
